@@ -5,20 +5,21 @@
 
 ---
 
-**Link video prezentare:**
-**Link publicare:** `https://github.com/anamria22/travel-wishlist-app`
+**Link video prezentare:** `https://youtu.be/HM3CisUgqfo`
+**Link github:** `https://github.com/anamria22/travel-wishlist-app`
+**Link publicare:** `https://travel-wishlist-app-jet.vercel.app/`
 
 ---
 
 ## 1. Introducere
 
-Travel Wishlist este o aplicatie web car permite utilizatorilor autentificati sa isi gestioneze o lista personala de destinatii de calatorie. Pentru fiecare destinatie adaugata, aplicatia afiseaza automat informatii meteo in timp real, locuri de vizitat si o fotografie reprezentativa a orasului.
+Travel Wishlist este o aplicatie web car permite utilizatorilor autentificati sa isi gestioneze o lista personala de destinatii de calatorie. Pentru fiecare destinatie adaugata, aplicatia afiseaza automat informatii meteo in timp real si o fotografie reprezentativa a orasului.
 
 ---
 
 ## 2. Descriere problema
 
-Calatorii isi doresc un loc centralizat unde sa isi salveze destinatiile dorite si sa acceseze rapid informatii relevante despre acestea: conditii meteo, atractii turistice si fotografii. Aplicatia rezolva aceasta nevoie prin combinarea mai multor servicii cloud intr-o interfata simpla si intuitiva, cu autentificare si persistenta a datelor.
+Calatorii isi doresc un loc centralizat unde sa isi salveze destinatiile dorite si sa acceseze rapid informatii relevante despre acestea: conditii meteo si fotografii. Aplicatia rezolva aceasta nevoie prin combinarea unor servicii cloud intr-o interfata simpla si intuitiva, cu autentificare si persistenta a datelor.
 
 ---
 
@@ -35,18 +36,12 @@ Aplicatia integreaza urmatoarele servicii externe prin API REST
 
 - **Endpoint:** `https://geocoding-api.open-meteo.com/v1/search`
 - Converteste numele unui oras in coordonate geografice (latitudine, longitudine)
-- Nu necesita autentificare (API public gratuit
+- Nu necesita autentificare (API public gratuit)
 
 ### Open-Meteo Weather API
 
 - **Endpoint:** `https://api.open-meteo.com/v1/forecast`
 - Returneaza datele meteo curente pentru coordonatele geografice date: temperatura, umiditate, viteza vantului, cod conditie meteo
-- Nu necesita autentificare (API public gratuit)
-
-### Overpass API (OpenStreetMap)
-
-- **Endpoint:** `https://overpass-api.de/api/interpreter`
-- Returneaza locuri turistice (muzee, monumente, galerii, parcuri tematice etc.) in raza de 8 km fata de orasul selectat
 - Nu necesita autentificare (API public gratuit)
 
 ### Unsplash API
@@ -77,7 +72,6 @@ La selectarea unei destinatii din lista:
 1. Se apeleaza **Unsplash API** pentru a obtine o fotografie a orasului
 2. Se apeleaza **Open-Meteo Geocoding API** pentru coordonatele orasului
 3. Se apeleaza **Open-Meteo Weather API** cu coordonatele obtinute pentru datele meteo
-4. Se apeleaza **Overpass API** pentru lista de atractii turistice
 
 ### Exemple de request / response
 
@@ -122,32 +116,6 @@ Response:
 }
 ```
 
-**Overpass API - locuri turistice:**
-
-```
-POST https://overpass-api.de/api/interpreter
-Body (Overpass QL):
-[out:json][timeout:10];
-(
-  node["tourism"~"attraction|museum|gallery|monument"](around:8000,48.85,2.35);
-);
-out body 12;
-
-Response:
-{
-  "elements": [
-    {
-      "id": 123456,
-      "tags": {
-        "name": "Musee du Louvre",
-        "tourism": "museum",
-        "website": "https://www.louvre.fr"
-      }
-    }
-  ]
-}
-```
-
 **Unsplash API - fotografie oras:**
 
 ```
@@ -160,8 +128,8 @@ Response:
     {
       "urls": { "regular": "https://images.unsplash.com/..." },
       "user": {
-        "name": "John Doe",
-        "links": { "html": "https://unsplash.com/@johndoe" }
+        "name": "Ana Babes",
+        "links": { "html": "https://unsplash.com/@anababes" }
       }
     }
   ]
@@ -174,7 +142,6 @@ Response:
 |-----|--------|------|
 | Open-Meteo Geocoding | GET | Cautare oras si coordonate |
 | Open-Meteo Weather | GET | Date meteo curente |
-| Overpass API | POST | Interogare locuri turistice |
 | Unsplash API | GET | Fotografii oras |
 | Firestore (SDK) | - | CRUD destinatii (gestionat de Firebase SDK) |
 
@@ -182,7 +149,7 @@ Response:
 
 - **Firebase:** autentificare cu email/parola prin Firebase Authentication SDK; datele din Firestore sunt protejate prin reguli de securitate bazate pe `uid`
 - **Unsplash:** autentificare prin `client_id` (cheie API) transmis ca query parameter
-- **Open-Meteo / Overpass:** API-uri publice, fara autentificare
+- **Open-Meteo** API public, fara autentificare
 
 ---
 
@@ -204,11 +171,6 @@ Response:
 
 - **afisare detalii oras, imagine, meteo**
 
-<img width="1157" height="838" alt="Screenshot 2026-05-09 021819" src="https://github.com/user-attachments/assets/7e833c3d-902b-4a98-9692-3d23c0fdcbff" />
-<img width="601" height="236" alt="Screenshot 2026-05-09 021854" src="https://github.com/user-attachments/assets/2fd0836c-e278-4b20-bac3-1b37c291d59e" />
-
-- **afisare atractii turistice si hyperlynk catre o pagina de referinta**
-
 <img width="1344" height="468" alt="Screenshot 2026-05-09 022522" src="https://github.com/user-attachments/assets/9426ff76-6e7b-4b41-a05f-e9b1f143ca3b" />
 
 - **stocare date in firebase**
@@ -223,8 +185,6 @@ Response:
 - Autocomplete la introducerea numelui orasului prin Open-Meteo Geocoding
 - Fotografie reprezentativa pentru orasul selectat prin Unsplash API
 - Date meteo in timp real: temperatura, umiditate, vant, vizibilitate (Open-Meteo)
-- Lista locuri de vizitat cu tip si iconita corespunzatoare (Overpass / OpenStreetMap)
-- Link direct catre site-ul oficial sau pagina Wikipedia a atractiilor turistice, disponibil la click pe numele atractiei
 
 ---
 
@@ -232,7 +192,6 @@ Response:
 
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [Open-Meteo API](https://open-meteo.com/)
-- [Overpass API](https://overpass-api.de/)
 - [Unsplash Developers](https://unsplash.com/developers)
 - [React](https://react.dev/)
 - [Vite](https://vitejs.dev/)
