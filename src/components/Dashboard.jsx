@@ -6,7 +6,6 @@ import {
   onSnapshot, query, where, serverTimestamp
 } from 'firebase/firestore'
 import WeatherWidget from './WeatherWidget'
-import PlacesWidget from './PlacesWidget'
 import CityAutocomplete from './CityAutocomplete'
 import CityPhoto from './CityPhoto'
 
@@ -115,7 +114,6 @@ export default function Dashboard({ user }) {
             <div className="right-panel-inner">
               <CityPhoto city={selectedCity.city} country={selectedCity.country} />
               <WeatherWidget city={selectedCity.city} country={selectedCity.country} />
-              <PlacesWidget city={selectedCity.city} country={selectedCity.country} />
             </div>
           ) : (
             <div className="weather-placeholder">
